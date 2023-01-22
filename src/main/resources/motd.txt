@@ -1,0 +1,1 @@
+Welcome to the ${application.title}${application.formatted-version} API - a minimalistic migration tool powered by Spring Boot${spring-boot.formatted-version} with active profiles ${spring.profiles.active}

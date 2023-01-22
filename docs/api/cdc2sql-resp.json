@@ -1,0 +1,19 @@
+{
+  "_links" : {
+    "pipeline:cdc2sql-sink" : {
+      "href" : "https://localhost:8443/cdc2sql/446bf3a6-05d1-40c4-89ca-612af4099241",
+      "title" : "cdc2sql sink endpoint"
+    },
+    "pipeline:execution" : {
+      "href" : "https://localhost:8443/jobs/execution/future/5740ba4c-b411-407b-8205-70de7b7d012e",
+      "title" : "job execution resource"
+    },
+    "curies" : [ {
+      "href" : "https://localhost:8443/rels/{rel}",
+      "name" : "pipeline",
+      "templated" : true
+    } ]
+  },
+  "message" : "cdc2sql job accepted for async processing",
+  "createStatement" : "CREATE CHANGEFEED FOR TABLE products INTO 'webhook-https://localhost:8443/cdc2sql/446bf3a6-05d1-40c4-89ca-612af4099241?insecure_tls_skip_verify=true' WITH updated, resolved='15s',  webhook_sink_config='{\"Flush\": {\"Messages\": 64, \"Frequency\": \"1s\"}, \"Retry\": {\"Max\": \"inf\"}}';"
+}

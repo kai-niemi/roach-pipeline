@@ -1,0 +1,141 @@
+{
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8090/flat2sql/form"
+    }
+  },
+  "targetUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc_copy?sslmode=disable",
+  "targetUsername" : "root",
+  "targetPassword" : "",
+  "concurrency" : 8,
+  "sourceFile" : "nodelocal:products-data.csv",
+  "schema" : {
+    "name" : "products",
+    "encoding" : "UTF-8",
+    "strict" : false,
+    "comments" : [ "--", "REM", "#" ],
+    "fields" : [ {
+      "name" : "id",
+      "ignored" : false
+    }, {
+      "name" : "inventory",
+      "ignored" : false
+    }, {
+      "name" : "name",
+      "ignored" : false
+    }, {
+      "name" : "price",
+      "ignored" : false
+    }, {
+      "name" : "sku",
+      "ignored" : false
+    } ],
+    "tokenizer" : {
+      "type" : "delimited",
+      "strict" : true,
+      "delimiter" : ",",
+      "quoteCharacter" : "\""
+    },
+    "includedFields" : [ {
+      "name" : "id",
+      "ignored" : false
+    }, {
+      "name" : "inventory",
+      "ignored" : false
+    }, {
+      "name" : "name",
+      "ignored" : false
+    }, {
+      "name" : "price",
+      "ignored" : false
+    }, {
+      "name" : "sku",
+      "ignored" : false
+    } ]
+  },
+  "linesToSkip" : 1,
+  "chunkSize" : 32,
+  "createQuery" : "CREATE TABLE public.products (id UUID NOT NULL DEFAULT gen_random_uuid(),inventory INT8 NOT NULL,name VARCHAR(128) NOT NULL,price DECIMAL(19,2) NOT NULL,sku VARCHAR(128) NOT NULL,CONSTRAINT products_pkey PRIMARY KEY (id ASC),UNIQUE INDEX products_sku_key (sku ASC))",
+  "insertQuery" : "UPSERT INTO products(id,inventory,name,price,sku) VALUES (:id,:inventory,:name,:price,:sku)",
+  "_templates" : {
+    "default" : {
+      "method" : "POST",
+      "properties" : [ {
+        "name" : "awsAccessKey",
+        "prompt" : "AWS access key for s3: prefixed paths ",
+        "placeholder" : "AWS_ACCESS_KEY_ID",
+        "type" : "text"
+      }, {
+        "name" : "awsRegion",
+        "prompt" : "AWS region for s3: prefixed paths",
+        "placeholder" : "AWS_DEFAULT_REGION",
+        "type" : "text"
+      }, {
+        "name" : "awsSecretAccessKey",
+        "prompt" : "AWS secret key for s3: prefixed paths",
+        "placeholder" : "AWS_SECRET_ACCESS_KEY",
+        "type" : "text"
+      }, {
+        "name" : "chunkSize",
+        "prompt" : "Items to read before writing",
+        "placeholder" : "32",
+        "type" : "number"
+      }, {
+        "name" : "concurrency",
+        "prompt" : "Concurrency level for readers",
+        "placeholder" : "1",
+        "type" : "number"
+      }, {
+        "name" : "createQuery",
+        "prompt" : "Target database table create statement or DDL file path",
+        "placeholder" : "nodelocal:products-ddl.sql",
+        "type" : "text"
+      }, {
+        "name" : "insertQuery",
+        "prompt" : "Target database insert/upsert statement (use named parameters prefixed with colon)",
+        "placeholder" : "upsert into customer(c_id, c_d_id, c_w_id, c_first, c_middle, c_last, c_street_1, c_street_2, c_city, c_state, c_zip, c_phone, c_since, c_credit, c_credit_lim, c_discount, c_balance, c_ytd_payment, c_payment_cnt, c_delivery_cnt, c_data) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "type" : "text"
+      }, {
+        "name" : "linesToSkip",
+        "prompt" : "Lines to skip initially",
+        "placeholder" : "0",
+        "type" : "number"
+      }, {
+        "name" : "schema",
+        "prompt" : "Source file schema",
+        "placeholder" : "Use schema path or embedded schema (this)"
+      }, {
+        "name" : "schemaFile",
+        "prompt" : "Source file schema path",
+        "placeholder" : "nodelocal:customers-schema.json",
+        "type" : "text"
+      }, {
+        "name" : "sourceFile",
+        "prompt" : "Source file path",
+        "placeholder" : "nodelocal:customers-data.csv",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "table",
+        "type" : "text"
+      }, {
+        "name" : "targetPassword",
+        "prompt" : "Target database login password",
+        "placeholder" : "(none)",
+        "type" : "text"
+      }, {
+        "name" : "targetUrl",
+        "prompt" : "Target database URL",
+        "regex" : "jdbc:.*",
+        "placeholder" : "jdbc:postgresql://localhost:26257/target?sslmode=disable",
+        "type" : "text"
+      }, {
+        "name" : "targetUsername",
+        "prompt" : "Target database login name",
+        "placeholder" : "root",
+        "type" : "text"
+      } ],
+      "target" : "http://localhost:8090/flat2sql"
+    }
+  }
+}

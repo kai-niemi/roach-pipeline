@@ -1,0 +1,47 @@
+{
+    "name": "test",
+    "comments": [
+        "--",
+        "<REM>",
+        "<TERM>",
+        "#"
+    ],
+    "fields": [
+        {
+            "name": "SKU",
+            "range": {
+                "min": 1,
+                "max": 12
+            }
+        },
+        {
+            "name": "Quantity",
+            "range": {
+                "min": 13,
+                "max": 15
+            }
+        },
+        {
+            "name": "Price",
+            "range": {
+                "min": 16,
+                "max": 20
+            }
+        },
+        {
+            "name": "Total",
+            "expression": "#fieldSet.readLong(\"Price\") * #fieldSet.readLong(\"Quantity\")"
+        },
+        {
+            "name": "Customer",
+            "range": {
+                "min": 21,
+                "max": 29
+            }
+        }
+    ],
+    "tokenizer": {
+        "type": "fixed",
+        "strict": true
+    }
+}

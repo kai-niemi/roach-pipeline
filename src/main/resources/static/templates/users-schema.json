@@ -1,0 +1,31 @@
+{
+  "fields": [
+    {
+      "name": "id"
+    },
+    {
+      "name": "city"
+    },
+    {
+      "name": "first_name"
+    },
+    {
+      "name": "last_name"
+    },
+    {
+      "name": "full_name",
+      "ignored": true
+    },
+    {
+      "name": "fav_color"
+    },
+    {
+      "name": "profile"
+    }
+  ],
+  "tokenizer": {
+    "type": "delimited",
+    "delimiter": ",",
+    "quoteCharacter": "\""
+  }
+}

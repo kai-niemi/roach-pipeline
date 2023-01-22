@@ -1,0 +1,57 @@
+{
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8090/sql2sql/form"
+    }
+  },
+  "table" : "customer",
+  "sourceUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc?sslmode=disable",
+  "sourceUsername" : "root",
+  "sourcePassword" : "",
+  "targetUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc_copy?sslmode=disable",
+  "targetUsername" : "root",
+  "targetPassword" : "",
+  "concurrency": 8,
+  "chunkSize" : 32,
+  "linesToSkip" : 0,
+  "pageSize" : 32,
+  "sortKeys" : "c_w_id ASC,c_d_id ASC,c_id ASC",
+  "selectClause" : "SELECT *",
+  "fromClause" : "FROM customer",
+  "whereClause" : "WHERE 1=1",
+  "createQuery" : "CREATE TABLE IF NOT EXISTS public.customer (c_id INT8 NOT NULL,c_d_id INT8 NOT NULL,c_w_id INT8 NOT NULL,c_first VARCHAR(16) NOT NULL,c_middle CHAR(2) NOT NULL,c_last VARCHAR(16) NOT NULL,c_street_1 VARCHAR(20) NOT NULL,c_street_2 VARCHAR(20) NOT NULL,c_city VARCHAR(20) NOT NULL,c_state CHAR(2) NOT NULL,c_zip CHAR(9) NOT NULL,c_phone CHAR(16) NOT NULL,c_since TIMESTAMP NOT NULL,c_credit CHAR(2) NOT NULL,c_credit_lim DECIMAL(12,2) NOT NULL,c_discount DECIMAL(4,4) NOT NULL,c_balance DECIMAL(12,2) NOT NULL,c_ytd_payment DECIMAL(12,2) NOT NULL,c_payment_cnt INT8 NOT NULL,c_delivery_cnt INT8 NOT NULL,c_data VARCHAR(500) NOT NULL,CONSTRAINT \"primary\" PRIMARY KEY (c_w_id ASC, c_d_id ASC, c_id ASC),CONSTRAINT fk_c_w_id_ref_district FOREIGN KEY (c_w_id, c_d_id) REFERENCES public.district(d_w_id, d_id) NOT VALID,INDEX customer_idx (c_w_id ASC, c_d_id ASC, c_last ASC, c_first ASC),FAMILY \"primary\" (c_id, c_d_id, c_w_id, c_first, c_middle, c_last, c_street_1, c_street_2, c_city, c_state, c_zip, c_phone, c_since, c_credit, c_credit_lim, c_discount, c_balance, c_ytd_payment, c_payment_cnt, c_delivery_cnt, c_data))",
+  "insertQuery" : "UPSERT INTO customer(c_id,c_d_id,c_w_id,c_first,c_middle,c_last,c_street_1,c_street_2,c_city,c_state,c_zip,c_phone,c_since,c_credit,c_credit_lim,c_discount,c_balance,c_ytd_payment,c_payment_cnt,c_delivery_cnt,c_data) VALUES (:c_id,:c_d_id,:c_w_id,:c_first,:c_middle,:c_last,:c_street_1,:c_street_2,:c_city,:c_state,:c_zip,:c_phone,:c_since,:c_credit,:c_credit_lim,:c_discount,:c_balance,:c_ytd_payment,:c_payment_cnt,:c_delivery_cnt,:c_data)",
+  "_templates" : {
+    "default" : {
+      "method" : "POST",
+      "properties" : [ {
+        "name" : "sourcePassword",
+        "type" : "text"
+      }, {
+        "name" : "sourceUrl",
+        "regex" : "jdbc:.*",
+        "type" : "text"
+      }, {
+        "name" : "sourceUsername",
+        "type" : "text"
+      }, {
+        "name" : "table",
+        "type" : "text"
+      }, {
+        "name" : "targetPassword",
+        "type" : "text"
+      }, {
+        "name" : "targetUrl",
+        "regex" : "jdbc:.*",
+        "type" : "text"
+      }, {
+        "name" : "targetUsername",
+        "type" : "text"
+      }, {
+        "name" : "timeoutSeconds",
+        "type" : "number"
+      } ],
+      "target" : "http://localhost:8090/sql2sql"
+    }
+  }
+}

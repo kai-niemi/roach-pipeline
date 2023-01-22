@@ -1,0 +1,77 @@
+{
+  "_links" : {
+    "pipeline:template" : [ {
+      "href" : "http://localhost:8090/templates/products.txt",
+      "title" : "Sample products import file (TXT)"
+    }, {
+      "href" : "http://localhost:8090/templates/products-schema.json",
+      "title" : "Sample products schema (JSON)"
+    } ],
+    "self" : {
+      "href" : "http://localhost:8090/flat2csv/form"
+    },
+    "curies" : [ {
+      "href" : "http://localhost:8090/rels/{rel}",
+      "name" : "pipeline",
+      "templated" : true
+    } ]
+  },
+  "sourceFile" : "nodelocal:products.txt",
+  "schemaFile" : "nodelocal:products-schema.json",
+  "concurrency" : 1,
+  "chunkSize" : 256,
+  "linesToSkip" : 0,
+  "_templates" : {
+    "default" : {
+      "method" : "POST",
+      "properties" : [ {
+        "name" : "awsAccessKey",
+        "prompt" : "AWS access key for s3: prefixed paths ",
+        "placeholder" : "AWS_ACCESS_KEY_ID",
+        "type" : "text"
+      }, {
+        "name" : "awsRegion",
+        "prompt" : "AWS region for s3: prefixed paths",
+        "placeholder" : "AWS_DEFAULT_REGION",
+        "type" : "text"
+      }, {
+        "name" : "awsSecretAccessKey",
+        "prompt" : "AWS secret key for s3: prefixed paths",
+        "placeholder" : "AWS_SECRET_ACCESS_KEY",
+        "type" : "text"
+      }, {
+        "name" : "chunkSize",
+        "prompt" : "Items to read before writing",
+        "placeholder" : "32",
+        "min" : 1,
+        "type" : "number"
+      }, {
+        "name" : "concurrency",
+        "prompt" : "Concurrency level for readers",
+        "placeholder" : "1",
+        "min" : 1,
+        "max" : 256,
+        "type" : "number"
+      }, {
+        "name" : "linesToSkip",
+        "prompt" : "Lines to skip initially",
+        "placeholder" : "0",
+        "min" : 0,
+        "type" : "number"
+      }, {
+        "name" : "schemaFile",
+        "prompt" : "Schema file path",
+        "placeholder" : "nodelocal:products-schema.json",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "sourceFile",
+        "prompt" : "Source file path",
+        "placeholder" : "nodelocal:products.txt",
+        "required" : true,
+        "type" : "text"
+      } ],
+      "target" : "http://localhost:8090/flat2csv"
+    }
+  }
+}

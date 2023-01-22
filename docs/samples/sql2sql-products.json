@@ -1,0 +1,129 @@
+{
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8090/sql2sql/form"
+    }
+  },
+  "table" : "products",
+  "sourceUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc?sslmode=disable",
+  "sourceUsername" : "root",
+  "sourcePassword" : "",
+  "targetUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc_copy?sslmode=disable",
+  "targetUsername" : "root",
+  "targetPassword" : "",
+  "concurrency" : 8,
+  "chunkSize" : 32,
+  "linesToSkip" : 0,
+  "pageSize" : 32,
+  "sortKeys" : "id ASC",
+  "selectClause" : "SELECT *",
+  "fromClause" : "FROM products",
+  "whereClause" : "WHERE 1=1",
+  "insertQuery" : "UPSERT INTO products(id,inventory,name,price,sku) VALUES (:id,:inventory,:name,:price,:sku)",
+  "createQuery" : "CREATE TABLE public.products (id UUID NOT NULL DEFAULT gen_random_uuid(),inventory INT8 NOT NULL,name VARCHAR(128) NOT NULL,price DECIMAL(19,2) NOT NULL,sku VARCHAR(128) NOT NULL,CONSTRAINT products_pkey PRIMARY KEY (id ASC),UNIQUE INDEX products_sku_key (sku ASC))",
+  "_templates" : {
+    "default" : {
+      "method" : "POST",
+      "properties" : [ {
+        "name" : "chunkSize",
+        "prompt" : "Items to read before writing",
+        "placeholder" : "32",
+        "min" : 1,
+        "type" : "number"
+      }, {
+        "name" : "concurrency",
+        "prompt" : "Concurrency level for readers",
+        "placeholder" : "1",
+        "min" : 1,
+        "max" : 256,
+        "type" : "number"
+      }, {
+        "name" : "createQuery",
+        "prompt" : "Target database table create statement or DDL file path",
+        "placeholder" : "nodelocal:customers-ddl.sql",
+        "type" : "text"
+      }, {
+        "name" : "fromClause",
+        "prompt" : "From clause part of the keyset pagination query",
+        "placeholder" : "FROM customer",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "insertQuery",
+        "prompt" : "Insert/Upsert query to use for target database",
+        "placeholder" : "upsert into customer(c_id, c_d_id, c_w_id) VALUES (?,?,?)",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "linesToSkip",
+        "prompt" : "Lines to skip initially",
+        "placeholder" : "0",
+        "min" : 0,
+        "type" : "number"
+      }, {
+        "name" : "pageSize",
+        "prompt" : "Source query page size",
+        "placeholder" : "32",
+        "min" : 1,
+        "type" : "number"
+      }, {
+        "name" : "selectClause",
+        "prompt" : "Select clause part of the keyset pagination query",
+        "placeholder" : "SELECT *",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "sortKeys",
+        "prompt" : "Sort keys for the pagination query (use PK order)",
+        "placeholder" : "c_w_id ASC, c_d_id ASC, c_id ASC",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "sourcePassword",
+        "prompt" : "Source database login password",
+        "placeholder" : "(none)",
+        "type" : "text"
+      }, {
+        "name" : "sourceUrl",
+        "prompt" : "Source database URL",
+        "regex" : "jdbc:.*",
+        "placeholder" : "jdbc:postgresql://localhost:26257/source?sslmode=disable",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "sourceUsername",
+        "prompt" : "Source database login name",
+        "placeholder" : "root",
+        "type" : "text"
+      }, {
+        "name" : "table",
+        "prompt" : "Table name for auto-generating create and insert SQL statements",
+        "placeholder" : "customer",
+        "type" : "text"
+      }, {
+        "name" : "targetPassword",
+        "prompt" : "Target database login password",
+        "placeholder" : "(none)",
+        "type" : "text"
+      }, {
+        "name" : "targetUrl",
+        "prompt" : "Target database URL",
+        "regex" : "jdbc:.*",
+        "placeholder" : "jdbc:postgresql://localhost:26257/target?sslmode=disable",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "targetUsername",
+        "prompt" : "Target database login name",
+        "placeholder" : "root",
+        "type" : "text"
+      }, {
+        "name" : "whereClause",
+        "prompt" : "Where clause part of the keyset pagination query",
+        "placeholder" : "WHERE 1=1",
+        "type" : "text"
+      } ],
+      "target" : "http://localhost:8090/sql2sql"
+    }
+  }
+}

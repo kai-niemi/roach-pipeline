@@ -1,0 +1,3 @@
+# kafka2sql Resource
+
+---

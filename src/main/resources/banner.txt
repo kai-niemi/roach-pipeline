@@ -1,0 +1,9 @@
+${AnsiColor.BRIGHT_YELLOW}                               C O C K R O A C H D B
+──▄──▄────▄▀        ____  _            ___
+───▀▄─█─▄▀▄▄▄      / __ \(_)___  ___  / (_)___  ___
+▄██▄████▄██▄▀█▄   / /_/ / / __ \/ _ \/ / / __ \/ _ \
+─▀▀─█▀█▀▄▀███▀   / ____/ / /_/ /  __/ / / / / /  __/
+──▄▄▀─█──▀▄▄    /_/   /_/ .___/\___/_/_/_/ /_/\___/
+                       /_/
+${AnsiColor.BRIGHT_GREEN}${application.title}${application.formatted-version} powered by Spring Boot${spring-boot.formatted-version}
+Active profiles: ${spring.profiles.active}${AnsiColor.DEFAULT}

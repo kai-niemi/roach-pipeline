@@ -1,0 +1,79 @@
+{
+    "name": "customers",
+    "comments": [
+        "--",
+        "REM",
+        "#"
+    ],
+    "fields": [
+        {
+            "name": "c_id"
+        },
+        {
+            "name": "c_d_id"
+        },
+        {
+            "name": "c_w_id"
+        },
+        {
+            "name": "c_first"
+        },
+        {
+            "name": "c_middle"
+        },
+        {
+            "name": "c_last"
+        },
+        {
+            "name": "c_street_1"
+        },
+        {
+            "name": "c_street_2"
+        },
+        {
+            "name": "c_city"
+        },
+        {
+            "name": "c_state"
+        },
+        {
+            "name": "c_zip"
+        },
+        {
+            "name": "c_phone"
+        },
+        {
+            "name": "c_since"
+        },
+        {
+            "name": "c_credit"
+        },
+        {
+            "name": "c_credit_lim"
+        },
+        {
+            "name": "c_discount"
+        },
+        {
+            "name": "c_balance"
+        },
+        {
+            "name": "c_ytd_payment"
+        },
+        {
+            "name": "c_payment_cnt"
+        },
+        {
+            "name": "c_delivery_cnt"
+        },
+        {
+            "name": "c_data"
+        }
+    ],
+    "tokenizer": {
+        "type": "delimited",
+        "strict": true,
+        "delimiter": ",",
+        "quoteCharacter": "\""
+    }
+}

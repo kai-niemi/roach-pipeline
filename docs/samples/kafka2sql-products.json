@@ -1,0 +1,106 @@
+{
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8090/kafka2sql/form"
+    }
+  },
+  "table" : "products",
+  "targetUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc_copy?sslmode=disable",
+  "targetUsername" : "root",
+  "targetPassword" : "",
+  "concurrency" : 8,
+  "chunkSize" : 32,
+  "pollTimeoutSeconds" : 120,
+  "createQuery" : "CREATE TABLE public.products (id UUID NOT NULL DEFAULT gen_random_uuid(),inventory INT8 NOT NULL,name VARCHAR(128) NOT NULL,price DECIMAL(19,2) NOT NULL,sku VARCHAR(128) NOT NULL,CONSTRAINT products_pkey PRIMARY KEY (id ASC),UNIQUE INDEX products_sku_key (sku ASC))",
+  "insertQuery" : "UPSERT INTO products(id,inventory,name,price,sku) VALUES (:id,:inventory,:name,:price,:sku)",
+  "name" : "products-reader",
+  "topic" : "products",
+  "bootstrapServers" : "192.168.1.99:9092",
+  "groupId" : "pipeline",
+  "saveOffsets" : true,
+  "_templates" : {
+    "default" : {
+      "method" : "POST",
+      "properties" : [ {
+        "name" : "bootstrapServers",
+        "prompt" : "List of host/port pairs to use for establishing the initial connection to the Kafka cluster",
+        "placeholder" : "localhost:9092",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "chunkSize",
+        "prompt" : "Items to read before writing",
+        "placeholder" : "32",
+        "min" : 1,
+        "type" : "number"
+      }, {
+        "name" : "concurrency",
+        "prompt" : "Concurrency level for readers",
+        "placeholder" : "1",
+        "min" : 1,
+        "max" : 256,
+        "type" : "number"
+      }, {
+        "name" : "createQuery",
+        "prompt" : "Target database table create statement or DDL file path",
+        "placeholder" : "nodelocal:products-ddl.sql",
+        "type" : "text"
+      }, {
+        "name" : "groupId",
+        "prompt" : "Unique string that identifies the consumer group this consumer belongs to",
+        "placeholder" : "pipeline",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "insertQuery",
+        "prompt" : "Target database insert/upsert statement (use named parameters prefixed with colon)",
+        "placeholder" : "upsert into customer(c_id, c_d_id, c_w_id, c_first, c_middle, c_last, c_street_1, c_street_2, c_city, c_state, c_zip, c_phone, c_since, c_credit, c_credit_lim, c_discount, c_balance, c_ytd_payment, c_payment_cnt, c_delivery_cnt, c_data) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "name",
+        "prompt" : "Read timeout in seconds before ending",
+        "placeholder" : "300",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "pollTimeoutSeconds",
+        "prompt" : "Read timeout in seconds before ending",
+        "placeholder" : "300",
+        "min" : 10,
+        "type" : "number"
+      }, {
+        "name" : "saveOffsets",
+        "prompt" : "Enables the consumer offset to be persisted for restart purposes",
+        "placeholder" : "true"
+      }, {
+        "name" : "table",
+        "type" : "text"
+      }, {
+        "name" : "targetPassword",
+        "prompt" : "Target database login password",
+        "placeholder" : "(none)",
+        "type" : "text"
+      }, {
+        "name" : "targetUrl",
+        "prompt" : "Target database URL",
+        "regex" : "jdbc:.*",
+        "placeholder" : "jdbc:postgresql://localhost:26257/target?sslmode=disable",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "targetUsername",
+        "prompt" : "Target database login name",
+        "placeholder" : "root",
+        "type" : "text"
+      }, {
+        "name" : "topic",
+        "prompt" : "Topic name to manually assign to the consumer (table name)",
+        "placeholder" : "product",
+        "required" : true,
+        "type" : "text"
+      } ],
+      "target" : "http://localhost:8090/kafka2sql"
+    }
+  }
+}

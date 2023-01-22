@@ -1,0 +1,56 @@
+{
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8090/sql2sql/form"
+    }
+  },
+  "table" : "district",
+  "sourceUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc?sslmode=disable",
+  "sourceUsername" : "root",
+  "sourcePassword" : "",
+  "targetUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc_copy?sslmode=disable",
+  "targetUsername" : "root",
+  "targetPassword" : "",
+  "chunkSize" : 32,
+  "linesToSkip" : 0,
+  "pageSize" : 32,
+  "sortKeys" : "d_w_id ASC,d_id ASC",
+  "selectClause" : "SELECT *",
+  "fromClause" : "FROM district",
+  "whereClause" : "WHERE 1=1",
+  "createQuery" : "CREATE TABLE IF NOT EXISTS public.district (d_id INT8 NOT NULL,d_w_id INT8 NOT NULL,d_name VARCHAR(10) NOT NULL,d_street_1 VARCHAR(20) NOT NULL,d_street_2 VARCHAR(20) NOT NULL,d_city VARCHAR(20) NOT NULL,d_state CHAR(2) NOT NULL,d_zip CHAR(9) NOT NULL,d_tax DECIMAL(4,4) NOT NULL,d_ytd DECIMAL(12,2) NOT NULL,d_next_o_id INT8 NOT NULL,CONSTRAINT \"primary\" PRIMARY KEY (d_w_id ASC, d_id ASC),CONSTRAINT fk_d_w_id_ref_warehouse FOREIGN KEY (d_w_id) REFERENCES public.warehouse(w_id) NOT VALID,FAMILY \"primary\" (d_id, d_w_id, d_name, d_street_1, d_street_2, d_city, d_state, d_zip, d_tax, d_ytd, d_next_o_id))",
+  "insertQuery" : "UPSERT INTO district(d_id,d_w_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax,d_ytd,d_next_o_id) VALUES (:d_id,:d_w_id,:d_name,:d_street_1,:d_street_2,:d_city,:d_state,:d_zip,:d_tax,:d_ytd,:d_next_o_id)",
+  "_templates" : {
+    "default" : {
+      "method" : "POST",
+      "properties" : [ {
+        "name" : "sourcePassword",
+        "type" : "text"
+      }, {
+        "name" : "sourceUrl",
+        "regex" : "jdbc:.*",
+        "type" : "text"
+      }, {
+        "name" : "sourceUsername",
+        "type" : "text"
+      }, {
+        "name" : "table",
+        "type" : "text"
+      }, {
+        "name" : "targetPassword",
+        "type" : "text"
+      }, {
+        "name" : "targetUrl",
+        "regex" : "jdbc:.*",
+        "type" : "text"
+      }, {
+        "name" : "targetUsername",
+        "type" : "text"
+      }, {
+        "name" : "timeoutSeconds",
+        "type" : "number"
+      } ],
+      "target" : "http://localhost:8090/sql2sql"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.1.99:26257/pipeline?sslmode=disable
+
+pipeline:
+  nodelocal:
+    path: docs/samples
+  template:
+    pollTimeoutSeconds: 120
+    chunkSize: 32
+    kafka:
+      bootstrapServers: 192.168.1.99:9092
+      groupId: pipeline
+    source:
+      url: jdbc:postgresql://192.168.1.99:26257/tpcc?sslmode=disable
+      username: root
+      password: 
+    target:
+      url: jdbc:postgresql://192.168.1.99:26257/tpcc_copy?sslmode=disable
+      username: root
+      password:

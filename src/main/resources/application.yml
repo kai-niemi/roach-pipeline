@@ -1,0 +1,121 @@
+########################
+# Spring boot properties
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+########################
+spring:
+  profiles:
+    active: crdb
+  application:
+    name: pipeline
+  output:
+    ansi:
+      enabled: always
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+  shell:
+    interactive:
+      enabled: true
+  jackson:
+    serialization:
+      indent_output: true
+      write_dates_as_timestamps: false
+    deserialization:
+      fail_on_unknown_properties: false
+      fail_on_ignored_properties: false
+    default-property-inclusion: non_null
+    locale: en_US
+  mvc:
+    throw-exception-if-no-handler-found: true
+  datasource:
+    # Datasource for internal spring-batch job metadata (not for the pipeline jobs)
+    url: jdbc:postgresql://localhost:26257/pipeline?sslmode=disable
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 10
+      keepalive-time: 60000
+      max-lifetime: 900000
+      connection-timeout: 10000
+      connection-init-sql: select 1
+      pool-name: pipeline_internal
+      auto-commit: false
+##################################
+# HTTP and HTTPS with self-signed cert for webhook sink
+server:
+  http:
+    port: 8090
+  port: 8443
+  ssl:
+    key-store: classpath:cert/pipeline-selfsigned.p12
+    key-store-password: secret
+    key-store-type: pkcs12
+    key-alias: pipeline
+    key-password: secret
+  gzip:
+    enabled: true
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: always
+    include-message: always
+##################################
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: conditions,env,health,metrics,prometheus,info,threaddump
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+##################################
+logging:
+  pattern:
+    console: "%clr(%d{${LOG_DATEFORMAT_PATTERN:HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) [%t] %clr([%logger{39}]){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+    file: "%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:%5p} [%t] %logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}"
+  file:
+    name: .log/batch.log
+  logback:
+    rollingpolicy:
+      max-history: 3
+##################################
+pipeline:
+  nodelocal:
+    path: .
+  cdc:
+    webhook:
+      queue-capacity: 256
+  # Template settings for pre-filling forms and generating bundles and zip-bundles
+  template:
+    # Default CDC poll timeout
+    pollTimeoutSeconds: 300
+    # Default read item chunk size (commit interval)
+    chunkSize: 1
+    # Number of concurrent readers and source connections
+    concurrency: 1
+    # Kafka to SQL job
+    kafka:
+      bootstrapServers: localhost:9092
+      groupId: pipeline
+    # Source database connection params (used for introspection)
+    source:
+      url: jdbc:postgresql://localhost:26257/tpcc?sslmode=disable
+      username: root
+      password:
+    # Default target database connection params (not used, only for pre-filling)
+    target:
+      url: jdbc:postgresql://localhost:26257/tpcc_copy?sslmode=disable
+      username: root
+      password:
+

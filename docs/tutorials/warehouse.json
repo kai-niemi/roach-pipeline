@@ -1,0 +1,56 @@
+{
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8090/sql2sql/form"
+    }
+  },
+  "table" : "warehouse",
+  "sourceUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc?sslmode=disable",
+  "sourceUsername" : "root",
+  "sourcePassword" : "",
+  "targetUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc_copy?sslmode=disable",
+  "targetUsername" : "root",
+  "targetPassword" : "",
+  "chunkSize" : 32,
+  "linesToSkip" : 0,
+  "pageSize" : 32,
+  "sortKeys" : "w_id ASC",
+  "selectClause" : "SELECT *",
+  "fromClause" : "FROM warehouse",
+  "whereClause" : "WHERE 1=1",
+  "createQuery" : "CREATE TABLE IF NOT EXISTS public.warehouse (w_id INT8 NOT NULL,w_name VARCHAR(10) NOT NULL,w_street_1 VARCHAR(20) NOT NULL,w_street_2 VARCHAR(20) NOT NULL,w_city VARCHAR(20) NOT NULL,w_state CHAR(2) NOT NULL,w_zip CHAR(9) NOT NULL,w_tax DECIMAL(4,4) NOT NULL,w_ytd DECIMAL(12,2) NOT NULL,CONSTRAINT \"primary\" PRIMARY KEY (w_id ASC),FAMILY \"primary\" (w_id, w_name, w_street_1, w_street_2, w_city, w_state, w_zip, w_tax, w_ytd))",
+  "insertQuery" : "UPSERT INTO warehouse(w_id,w_name,w_street_1,w_street_2,w_city,w_state,w_zip,w_tax,w_ytd) VALUES (:w_id,:w_name,:w_street_1,:w_street_2,:w_city,:w_state,:w_zip,:w_tax,:w_ytd)",
+  "_templates" : {
+    "default" : {
+      "method" : "POST",
+      "properties" : [ {
+        "name" : "sourcePassword",
+        "type" : "text"
+      }, {
+        "name" : "sourceUrl",
+        "regex" : "jdbc:.*",
+        "type" : "text"
+      }, {
+        "name" : "sourceUsername",
+        "type" : "text"
+      }, {
+        "name" : "table",
+        "type" : "text"
+      }, {
+        "name" : "targetPassword",
+        "type" : "text"
+      }, {
+        "name" : "targetUrl",
+        "regex" : "jdbc:.*",
+        "type" : "text"
+      }, {
+        "name" : "targetUsername",
+        "type" : "text"
+      }, {
+        "name" : "timeoutSeconds",
+        "type" : "number"
+      } ],
+      "target" : "http://localhost:8090/sql2sql"
+    }
+  }
+}

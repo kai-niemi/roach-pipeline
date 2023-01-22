@@ -1,0 +1,1 @@
+keytool -genkeypair -alias pipeline -keyalg RSA -keysize 4096 -validity 3650 -dname "CN=localhost" -keypass secret -keystore pipeline-selfsigned.p12 -storeType PKCS12 -storepass secret

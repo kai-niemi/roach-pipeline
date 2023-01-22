@@ -1,0 +1,113 @@
+{
+  "_links" : {
+    "pipeline:sql2sql" : {
+      "href" : "http://localhost:8090/sql2csv?params=nodelocal%3Aproducts-job.json",
+      "name" : "sql2sql"
+    },
+    "self" : {
+      "href" : "http://localhost:8090/sql2csv/form"
+    },
+    "curies" : [ {
+      "href" : "http://localhost:8090/rels/{rel}",
+      "name" : "pipeline",
+      "templated" : true
+    } ]
+  },
+  "sourceUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc?sslmode=disable",
+  "sourceUsername" : "root",
+  "sourcePassword" : "",
+  "concurrency" : 8,
+  "chunkSize" : 32,
+  "linesToSkip" : 0,
+  "pageSize" : 32,
+  "sortKeys" : "id",
+  "selectClause" : "SELECT id,inventory,name,price,sku",
+  "fromClause" : "FROM products",
+  "whereClause" : "WHERE 1=1",
+  "createQuery" : "CREATE TABLE public.products (id UUID NOT NULL DEFAULT gen_random_uuid(),inventory INT8 NOT NULL,name VARCHAR(128) NOT NULL,price DECIMAL(19,2) NOT NULL,sku VARCHAR(128) NOT NULL,CONSTRAINT products_pkey PRIMARY KEY (id ASC),UNIQUE INDEX products_sku_key (sku ASC))",
+  "importQuery" : "IMPORT INTO products(id,inventory,name,price,sku) CSV DATA (http://localhost:8090/sql2csv?params=nodelocal%3Aproducts-job.json)",
+  "_templates" : {
+    "default" : {
+      "method" : "POST",
+      "properties" : [ {
+        "name" : "chunkSize",
+        "prompt" : "Items to read before writing",
+        "placeholder" : "32",
+        "min" : 1,
+        "type" : "number"
+      }, {
+        "name" : "concurrency",
+        "prompt" : "Concurrency level for readers",
+        "placeholder" : "1",
+        "min" : 1,
+        "max" : 256,
+        "type" : "number"
+      }, {
+        "name" : "createQuery",
+        "prompt" : "Target database table create statement or DDL file path",
+        "placeholder" : "nodelocal:products-ddl.sql",
+        "type" : "text"
+      }, {
+        "name" : "fromClause",
+        "prompt" : "From clause part of the keyset pagination query",
+        "placeholder" : "FROM products",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "importQuery",
+        "prompt" : "Import query to use in CockroachDB",
+        "placeholder" : "IMPORT INTO products(id,inventory,name,price,sku) CSV DATA ('http://localhost:8090/sql2csv?params=nodelocal:products-job.json')",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "linesToSkip",
+        "prompt" : "Lines to skip initially",
+        "placeholder" : "0",
+        "min" : 0,
+        "type" : "number"
+      }, {
+        "name" : "pageSize",
+        "min" : 0,
+        "type" : "number"
+      }, {
+        "name" : "selectClause",
+        "prompt" : "Select clause part of the keyset pagination query",
+        "placeholder" : "SELECT id,inventory,name,price,sku",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "sortKeys",
+        "prompt" : "Sort keys for the pagination query (use PK order)",
+        "placeholder" : "id",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "sourcePassword",
+        "prompt" : "Source database login password",
+        "placeholder" : "(none)",
+        "type" : "text"
+      }, {
+        "name" : "sourceUrl",
+        "prompt" : "Source database URL",
+        "regex" : "jdbc:.*",
+        "placeholder" : "jdbc:postgresql://localhost:26257/source?sslmode=disable",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "sourceUsername",
+        "prompt" : "Source database login name",
+        "placeholder" : "root",
+        "type" : "text"
+      }, {
+        "name" : "table",
+        "type" : "text"
+      }, {
+        "name" : "whereClause",
+        "prompt" : "Where clause part of the keyset pagination query",
+        "placeholder" : "WHERE 1=1",
+        "type" : "text"
+      } ],
+      "target" : "http://localhost:8090/sql2csv"
+    }
+  }
+}

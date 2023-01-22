@@ -1,0 +1,33 @@
+{
+  "payload": [
+    {
+      "after": {
+        "id": "6e5e022b-9d8f-44d9-ab5e-8e679df0a2dd",
+        "inventory": 4,
+        "name": "b6425c438392f1fae12fe1b887505db5",
+        "price": 23.40,
+        "sku": "43d76dc2ee1bc408a969471bc8691cb5"
+      },
+      "key": [
+        "6e5e022b-9d8f-44d9-ab5e-8e679df0a2dd"
+      ],
+      "topic": "products",
+      "updated": "1654840447461408106.0000000000"
+    },
+    {
+      "after": {
+        "id": "92c12f99-a7de-4988-8846-bf0819cd6a05",
+        "inventory": 0,
+        "name": "829450b01fb3601de46afa0a03f0d2e8",
+        "price": 111.85,
+        "sku": "8009b4696b242582c269ecb1aad44284"
+      },
+      "key": [
+        "92c12f99-a7de-4988-8846-bf0819cd6a05"
+      ],
+      "topic": "products",
+      "updated": "1654840447461408106.0000000000"
+    }
+  ],
+  "length": 2
+}

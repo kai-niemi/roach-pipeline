@@ -1,0 +1,81 @@
+{
+  "_links" : {
+    "self" : {
+      "href" : "https://localhost:8443/cdc2sql/form"
+    }
+  },
+  "table" : "products",
+  "targetUrl" : "jdbc:postgresql://192.168.1.99:26300/tpcc_copy?sslmode=disable",
+  "targetUsername" : "root",
+  "targetPassword" : "",
+  "concurrency" : 1,
+  "subscriberId" : "446bf3a6-05d1-40c4-89ca-612af4099241",
+  "chunkSize" : 32,
+  "pollTimeoutSeconds" : 300,
+  "createQuery" : "CREATE TABLE IF NOT EXISTS public.products (id UUID NOT NULL DEFAULT gen_random_uuid(),inventory INT8 NOT NULL,name VARCHAR(128) NOT NULL,price DECIMAL(19,2) NOT NULL,sku VARCHAR(128) NOT NULL,CONSTRAINT products_pkey PRIMARY KEY (id ASC),UNIQUE INDEX products_sku_key (sku ASC))",
+  "insertQuery" : "UPSERT INTO products(id,inventory,name,price,sku) VALUES (:id,:inventory,:name,:price,:sku)",
+  "_templates" : {
+    "default" : {
+      "title" : "Create a CDC to SQL streaming job",
+      "method" : "POST",
+      "properties" : [ {
+        "name" : "chunkSize",
+        "prompt" : "Items to read before writing",
+        "placeholder" : "32",
+        "min" : 1,
+        "type" : "number"
+      }, {
+        "name" : "concurrency",
+        "prompt" : "Concurrency level for readers",
+        "placeholder" : "1",
+        "min" : 1,
+        "max" : 256,
+        "type" : "number"
+      }, {
+        "name" : "createQuery",
+        "prompt" : "Target database table create statement or DDL file path",
+        "placeholder" : "nodelocal:products-ddl.sql",
+        "type" : "text"
+      }, {
+        "name" : "insertQuery",
+        "prompt" : "Target database insert/upsert statement (use named parameters prefixed with colon)",
+        "placeholder" : "UPSERT INTO products(id,inventory,name,price,sku) VALUES (:id,:inventory,:name,:price,:sku)",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "pollTimeoutSeconds",
+        "prompt" : "Read timeout in seconds before ending",
+        "placeholder" : "300",
+        "min" : 10,
+        "type" : "number"
+      }, {
+        "name" : "subscriberId",
+        "prompt" : "Unique subscriber ID",
+        "required" : true,
+        "type" : "text"
+      }, {
+        "name" : "table",
+        "prompt" : "Table name for generating create and insert SQL statements",
+        "placeholder" : "product",
+        "type" : "text"
+      }, {
+        "name" : "targetPassword",
+        "prompt" : "Target database login password",
+        "placeholder" : "(none)",
+        "type" : "text"
+      }, {
+        "name" : "targetUrl",
+        "prompt" : "Target database URL",
+        "regex" : "jdbc:.*",
+        "placeholder" : "jdbc:postgresql://localhost:26257/target?sslmode=disable",
+        "type" : "text"
+      }, {
+        "name" : "targetUsername",
+        "prompt" : "Target database login name",
+        "placeholder" : "root",
+        "type" : "text"
+      } ],
+      "target" : "https://localhost:8443/cdc2sql"
+    }
+  }
+}
