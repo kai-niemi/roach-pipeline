@@ -84,6 +84,7 @@ public class SQLtoCSVController extends AbstractFormController<SQLtoCSVForm> {
         form.setChunkSize(templateProperties.getChunkSize());
         form.setPageSize(32);
         form.setLinesToSkip(0);
+        form.setTable(table);
 
         if (StringUtils.hasLength(table)) {
             Assert.hasLength(form.getSourceUrl(), "sourceUrl is required for auto-templating");
@@ -132,7 +133,7 @@ public class SQLtoCSVController extends AbstractFormController<SQLtoCSVForm> {
     }
 
     @Override
-    @PostMapping
+    @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<StreamingResponseBody> submitForm(@Valid @RequestBody SQLtoCSVForm form)
             throws JobExecutionException {
         final StreamingResponseBody responseBody = outputStream -> {
@@ -143,7 +144,7 @@ public class SQLtoCSVController extends AbstractFormController<SQLtoCSVForm> {
             }
         };
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
+                .contentType(MediaType.TEXT_PLAIN)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
                 .header("Cache-Control", "no-cache, no-store, must-revalidate")
                 .header("Pragma", "no-cache")
@@ -229,8 +230,8 @@ public class SQLtoCSVController extends AbstractFormController<SQLtoCSVForm> {
     /**
      * Needed since IMPORT INTO only use GET not POST.
      */
-    @GetMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<?> streamFromSourceToTarget(
+    @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<StreamingResponseBody> streamFromSourceToTarget(
             @RequestParam(required = false) Map<String, String> valueMap)
             throws JobExecutionException {
         final Map<String, String> allParams = Objects.requireNonNull(valueMap, "params required");

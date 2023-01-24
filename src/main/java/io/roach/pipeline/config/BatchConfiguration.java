@@ -45,12 +45,23 @@ public class BatchConfiguration extends DefaultBatchConfiguration {
         TaskExecutorJobLauncher taskExecutorJobLauncher = new TaskExecutorJobLauncher();
         taskExecutorJobLauncher.setJobRepository(jobRepository());
         taskExecutorJobLauncher.setTaskExecutor(taskExecutor);
-
         try {
             taskExecutorJobLauncher.afterPropertiesSet();
             return taskExecutorJobLauncher;
         } catch (Exception e) {
             throw new BatchConfigurationException("Unable to configure the default job launcher", e);
+        }
+    }
+
+    @Bean
+    public JobLauncher blockingJobLauncher() throws BatchConfigurationException {
+        TaskExecutorJobLauncher taskExecutorJobLauncher = new TaskExecutorJobLauncher();
+        taskExecutorJobLauncher.setJobRepository(jobRepository());
+        try {
+            taskExecutorJobLauncher.afterPropertiesSet();
+            return taskExecutorJobLauncher;
+        } catch (Exception e) {
+            throw new BatchConfigurationException("Unable to configure the blocking job launcher", e);
         }
     }
 

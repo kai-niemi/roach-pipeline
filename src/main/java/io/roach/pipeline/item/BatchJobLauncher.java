@@ -25,6 +25,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.TransientDataAccessException;
 import org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer;
@@ -60,6 +61,10 @@ public class BatchJobLauncher {
 
     @Autowired
     private JobLauncher jobLauncher;
+
+    @Autowired
+    @Qualifier("blockingJobLauncher")
+    private JobLauncher blockingJobLauncher;
 
     @Autowired
     private JobRegistry jobRegistry;
@@ -138,7 +143,11 @@ public class BatchJobLauncher {
                 return jobExplorer.getJobExecution(executionId);
             } else {
                 JobParameters jobParameters = batchJobManifest.getJobParameters();
-                return jobLauncher.run(job, jobParameters);
+                if (batchJobManifest.getConcurrency()>1) {
+                    return jobLauncher.run(job, jobParameters);
+                } else {
+                    return blockingJobLauncher.run(job, jobParameters);
+                }
             }
         } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
                  | NoSuchJobExecutionException | NoSuchJobException
