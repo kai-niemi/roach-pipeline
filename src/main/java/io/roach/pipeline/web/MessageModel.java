@@ -4,7 +4,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"message","notice","links"})
+@JsonPropertyOrder({"links"})
 public class MessageModel extends RepresentationModel<MessageModel> {
     public static MessageModel from(String message) {
         return new MessageModel(message);

@@ -1,6 +1,8 @@
 package io.roach.pipeline.web.sql;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,7 @@ import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuild
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.NestedExceptionUtils;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -202,4 +205,41 @@ public class SQLtoSQLController extends AbstractFormController<SQLtoSQLForm> {
 
         return ResponseEntity.accepted().body(messageModel);
     }
+
+    @PostMapping(value = {"/forms"})
+    public ResponseEntity<CollectionModel<MessageModel>> submitFormTemplates(
+            @RequestBody CollectionModel<SQLtoSQLForm> bundle,
+            @RequestParam(value = "order", required = false) String order)
+            throws JobExecutionException {
+        Collection<SQLtoSQLForm> forms = new ArrayList<>(bundle.getContent());
+        List<SQLtoSQLForm> orderedForms = new ArrayList<>();
+        List<String> tablesInOrder
+                = Arrays.stream(StringUtils.commaDelimitedListToStringArray(order)).toList();
+
+        if (!tablesInOrder.isEmpty()) {
+            tablesInOrder.forEach(table -> {
+                SQLtoSQLForm match
+                        = forms.stream().filter(form -> table.equals(form.getTable())).findFirst()
+                        .orElseThrow(() -> new JobConfigurationException("No such table exist: " + table));
+                orderedForms.add(match);
+            });
+        } else {
+            orderedForms.addAll(forms);
+        }
+
+        List<MessageModel> models = new ArrayList<>();
+
+        for (SQLtoSQLForm form : orderedForms) {
+            logger.info("Submitting form for table: {}", form.getTable());
+            ResponseEntity<MessageModel> responseEntity = submitForm(form);
+            MessageModel responseBody = responseEntity.getBody();
+            models.add(responseBody);
+        }
+
+        // FK topology order for tpc-c
+        // warehouse,district,customer,history,"order",new_order,item,stock,order_line
+
+        return ResponseEntity.accepted().body(CollectionModel.of(models));
+    }
+
 }

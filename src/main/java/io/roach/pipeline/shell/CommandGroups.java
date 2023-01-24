@@ -9,8 +9,6 @@ public abstract class CommandGroups {
 
     public static final String JOBS = "(04) Management Commands";
 
-    public static final String PIPELINE = "(05) Pipeline Commands";
-
     private CommandGroups() {
     }
 }

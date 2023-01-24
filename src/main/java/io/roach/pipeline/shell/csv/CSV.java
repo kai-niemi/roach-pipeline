@@ -67,8 +67,7 @@ public class CSV {
     // csv --table users --url jdbc:postgresql://localhost:26257/tpcc --delimiter ;
     @ShellMethod(value = "Generate CSV file from table schema comment expressions")
     public void csv(
-            @ShellOption(help = "source database JDBC url", defaultValue = "(source-template)")
-            String url,
+            @ShellOption(help = "source database JDBC url", defaultValue = "(source-template)") String url,
             @ShellOption(help = "source database JDBC user name", defaultValue = "(source-template)") String username,
             @ShellOption(help = "source database JDBC password", defaultValue = "(source-template)") String password,
             @ShellOption(help = "source table name") String table,
@@ -237,37 +236,4 @@ public class CSV {
         console.information("Result: " + result);
         console.information("Result type: " + result.getClass().getName());
     }
-
-/*
-    @ShellMethod(value = "List tables", key = {"tables"})
-    public void listTables(
-            @ShellOption(help = "source database JDBC url",
-                    defaultValue = "jdbc:postgresql://localhost:26257/test") String url,
-            @ShellOption(help = "source database JDBC user name", defaultValue = "root") String username,
-            @ShellOption(help = "source database JDBC password", defaultValue = "") String password
-    ) {
-        final DataSourceProps dataSourceProperties = DataSourceProps.builder()
-                .withUrl(url)
-                .withUsername(username)
-                .withPassword(password)
-                .withName("pipeline")
-                .build();
-
-        final DataSource dataSource = dataSourceFactory.apply(dataSourceProperties);
-
-        DatabaseInfo.listTables(dataSource, "public").forEach(name -> {
-            console.information("Table: %s", name);
-            console.information("-- Columns --");
-
-            DatabaseInfo.listColumns(dataSource, name).forEach((s, column) -> {
-                console.information("%s", s);
-            });
-
-            console.information("-- Foreign Keys --");
-            DatabaseInfo.listForeignKeys(dataSource, name).forEach(foreignKey -> {
-                console.information("%s", foreignKey);
-            });
-        });
-    }
-*/
 }

@@ -1,10 +1,7 @@
 package io.roach.pipeline.web.cdc;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.TopicPartition;
@@ -14,6 +11,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.kafka.KafkaItemReader;
 import org.springframework.batch.item.kafka.builder.KafkaItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +36,7 @@ import io.roach.pipeline.shell.support.DatabaseInfo;
 import io.roach.pipeline.util.AddressUtils;
 import io.roach.pipeline.util.DataSourceProps;
 import io.roach.pipeline.web.AbstractFormController;
+import io.roach.pipeline.web.JobConfigurationException;
 import io.roach.pipeline.web.LinkRels;
 import io.roach.pipeline.web.admin.JobController;
 import jakarta.validation.Valid;
@@ -212,6 +211,43 @@ public class KafkaToSQLController extends AbstractFormController<KafkaToSQLForm>
 
         return ResponseEntity.accepted().body(model);
     }
+
+    @PostMapping(value = {"/forms"})
+    public ResponseEntity<CollectionModel<ChangeFeedModel>> submitFormTemplates(
+            @RequestBody CollectionModel<KafkaToSQLForm> bundle,
+            @RequestParam(value = "order", required = false) String order)
+            throws JobExecutionException {
+        Collection<KafkaToSQLForm> forms = new ArrayList<>(bundle.getContent());
+        List<KafkaToSQLForm> orderedForms = new ArrayList<>();
+        List<String> tablesInOrder
+                = Arrays.stream(StringUtils.commaDelimitedListToStringArray(order)).toList();
+
+        if (!tablesInOrder.isEmpty()) {
+            tablesInOrder.forEach(table -> {
+                KafkaToSQLForm match
+                        = forms.stream().filter(form -> table.equals(form.getTable())).findFirst()
+                        .orElseThrow(() -> new JobConfigurationException("No such table exist: " + table));
+                orderedForms.add(match);
+            });
+        } else {
+            orderedForms.addAll(forms);
+        }
+
+        List<ChangeFeedModel> models = new ArrayList<>();
+
+        for (KafkaToSQLForm form : orderedForms) {
+            logger.info("Submitting form for table: {}", form.getTable());
+            ResponseEntity<ChangeFeedModel> responseEntity = submitForm(form);
+            ChangeFeedModel responseBody = responseEntity.getBody();
+            models.add(responseBody);
+        }
+
+        // FK topology order for tpc-c
+        // warehouse,district,customer,history,"order",new_order,item,stock,order_line
+
+        return ResponseEntity.accepted().body(CollectionModel.of(models));
+    }
+
 
     private String kafkaChangeFeedStatement(String table, String bootstrapServers) {
         Set<String> servers = StringUtils.commaDelimitedListToSet(bootstrapServers);

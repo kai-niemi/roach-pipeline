@@ -203,8 +203,8 @@ public class ChangeFeedToSQLController extends AbstractFormController<ChangeFeed
         return ResponseEntity.accepted().body(model);
     }
 
-    @PostMapping(value = {"/bundle"})
-    public ResponseEntity<CollectionModel<ChangeFeedModel>> submitFormBundle(
+    @PostMapping(value = {"/forms"})
+    public ResponseEntity<CollectionModel<ChangeFeedModel>> submitFormTemplates(
             @RequestBody CollectionModel<ChangeFeedToSQLForm> bundle,
             @RequestParam(value = "order", required = false) String order)
             throws JobExecutionException {
@@ -227,7 +227,7 @@ public class ChangeFeedToSQLController extends AbstractFormController<ChangeFeed
         List<ChangeFeedModel> models = new ArrayList<>();
 
         for (ChangeFeedToSQLForm form : orderedForms) {
-            logger.info("Submitting cdc2sql form for table: {}", form.getTable());
+            logger.info("Submitting form for table: {}", form.getTable());
             ResponseEntity<ChangeFeedModel> responseEntity = submitForm(form);
             ChangeFeedModel responseBody = responseEntity.getBody();
             models.add(responseBody);
