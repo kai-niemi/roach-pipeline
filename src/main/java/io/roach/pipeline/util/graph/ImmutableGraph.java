@@ -15,5 +15,5 @@ public interface ImmutableGraph<N, V> {
 
     Set<N> adjacentNodes(N node);
 
-    List<N> topologicalSort();
+    List<N> topologicalSort(boolean reverse);
 }

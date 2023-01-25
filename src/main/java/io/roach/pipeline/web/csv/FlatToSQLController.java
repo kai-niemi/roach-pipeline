@@ -138,7 +138,8 @@ public class FlatToSQLController extends AbstractFormController<FlatToSQLForm> {
 
     @Override
     @PostMapping
-    public ResponseEntity<?> submitForm(@Valid @RequestBody FlatToSQLForm form) throws JobExecutionException {
+    public ResponseEntity<?> submitForm(@Valid @RequestBody FlatToSQLForm form)
+            throws JobExecutionException {
         Map<String, String> allParams = new HashMap<>();
         allParams.put(S3BucketResource.AWS_ACCESS_KEY_ID, form.getAwsAccessKey());
         allParams.put(S3BucketResource.AWS_SECRET_ACCESS_KEY, form.getAwsSecretAccessKey());

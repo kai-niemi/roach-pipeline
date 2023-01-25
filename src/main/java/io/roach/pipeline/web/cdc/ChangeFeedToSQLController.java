@@ -3,8 +3,6 @@ package io.roach.pipeline.web.cdc;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -40,7 +38,6 @@ import io.roach.pipeline.shell.support.DatabaseInfo;
 import io.roach.pipeline.util.AddressUtils;
 import io.roach.pipeline.util.DataSourceProps;
 import io.roach.pipeline.web.AbstractFormController;
-import io.roach.pipeline.web.JobConfigurationException;
 import io.roach.pipeline.web.LinkRels;
 import io.roach.pipeline.web.admin.JobController;
 import jakarta.validation.Valid;
@@ -204,37 +201,15 @@ public class ChangeFeedToSQLController extends AbstractFormController<ChangeFeed
     }
 
     @PostMapping(value = {"/forms"})
-    public ResponseEntity<CollectionModel<ChangeFeedModel>> submitFormTemplates(
-            @RequestBody CollectionModel<ChangeFeedToSQLForm> bundle,
-            @RequestParam(value = "order", required = false) String order)
+    public ResponseEntity<CollectionModel<ChangeFeedModel>> submitFormTemplateBundle(
+            @RequestBody CollectionModel<ChangeFeedToSQLForm> bundle)
             throws JobExecutionException {
-        Collection<ChangeFeedToSQLForm> forms = new ArrayList<>(bundle.getContent());
-        List<ChangeFeedToSQLForm> orderedForms = new ArrayList<>();
-        List<String> tablesInOrder
-                = Arrays.stream(StringUtils.commaDelimitedListToStringArray(order)).toList();
-
-        if (!tablesInOrder.isEmpty()) {
-            tablesInOrder.forEach(table -> {
-                ChangeFeedToSQLForm match
-                        = forms.stream().filter(form -> table.equals(form.getTable())).findFirst()
-                        .orElseThrow(() -> new JobConfigurationException("No such table exist: " + table));
-                orderedForms.add(match);
-            });
-        } else {
-            orderedForms.addAll(forms);
-        }
-
         List<ChangeFeedModel> models = new ArrayList<>();
 
-        for (ChangeFeedToSQLForm form : orderedForms) {
+        for (ChangeFeedToSQLForm form : bundle) {
             logger.info("Submitting form for table: {}", form.getTable());
-            ResponseEntity<ChangeFeedModel> responseEntity = submitForm(form);
-            ChangeFeedModel responseBody = responseEntity.getBody();
-            models.add(responseBody);
+            models.add(submitForm(form).getBody());
         }
-
-        // FK topology order for tpc-c
-        // warehouse,district,customer,history,"order",new_order,item,stock,order_line
 
         return ResponseEntity.accepted().body(CollectionModel.of(models));
     }

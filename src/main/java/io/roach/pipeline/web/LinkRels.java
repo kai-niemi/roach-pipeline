@@ -4,7 +4,7 @@ package io.roach.pipeline.web;
  * Domain specific link relations.
  */
 public abstract class LinkRels {
-    public static final String TABLES_REL = "tables";
+    public static final String DS_TABLES_REL = "datasource-tables";
     
     public static final String JOBS_REL = "jobs";
 

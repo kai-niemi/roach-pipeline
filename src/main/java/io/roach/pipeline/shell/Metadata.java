@@ -44,7 +44,7 @@ public class Metadata {
                 .withUrl(url)
                 .withUsername(username)
                 .withPassword(password)
-                .withName("metadata")
+                .withName("template-source")
                 .build();
 
         final DataSource dataSource = dataSourceFactory.apply(dataSourceProperties);
@@ -52,7 +52,6 @@ public class Metadata {
         Graph<String, DatabaseInfo.ForeignKey> graph = new Graph<>();
 
         DatabaseInfo.listTables(dataSource, "public").forEach(name -> {
-
             console.printf(AnsiColor.BRIGHT_WHITE, "Table: %s\n", name);
             console.printf(AnsiColor.BRIGHT_YELLOW, "-- Columns --\n");
 
@@ -77,7 +76,7 @@ public class Metadata {
         console.printf(AnsiColor.BRIGHT_YELLOW, "FK topological order:\n");
 
         try {
-            console.printf(AnsiColor.BRIGHT_GREEN, "%s\n", graph.topologicalSort());
+            console.printf(AnsiColor.BRIGHT_GREEN, "%s\n", graph.topologicalSort(true));
         } catch (IllegalStateException e) { // Not a DAG
             console.printf(AnsiColor.BRIGHT_RED, e.toString());
         }

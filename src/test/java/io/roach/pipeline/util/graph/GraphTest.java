@@ -22,7 +22,7 @@ public class GraphTest {
         graph.addEdge("order", "customer", "fk_order_product");
         graph.addEdge("product", "category", "fk_product_category");
 
-        List<String> result = graph.topologicalSort();
+        List<String> result = graph.topologicalSort(false);
 
         Assertions.assertEquals(Arrays.asList("order_item", "order", "customer", "product", "category"), result);
 
@@ -46,7 +46,7 @@ public class GraphTest {
         graph.addEdge("C", "E", 3);
         graph.addEdge("D", "E");
 
-        List<String> result = graph.topologicalSort();
+        List<String> result = graph.topologicalSort(false);
         Assertions.assertEquals(Arrays.asList("A", "C", "B", "D", "E"), result);
 
         System.out.println(graph);
@@ -73,7 +73,7 @@ public class GraphTest {
 
         System.out.println(graph);
 
-        Exception exception = Assertions.assertThrows(IllegalStateException.class, graph::topologicalSort);
+        Exception exception = Assertions.assertThrows(IllegalStateException.class, () -> graph.topologicalSort(false));
 
         Assertions.assertEquals("Cycle detected: [E->A] visited: [A, B, D, E]", exception.getMessage());
     }

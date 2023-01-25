@@ -87,8 +87,7 @@ public class FlatToCSVController extends AbstractFormController<FlatToCSVForm> {
 
     @Override
     @PostMapping
-    public ResponseEntity<StreamingResponseBody> submitForm(@Valid @RequestBody FlatToCSVForm form)
-            throws JobExecutionException {
+    public ResponseEntity<StreamingResponseBody> submitForm(@Valid @RequestBody FlatToCSVForm form) {
         final StreamingResponseBody responseBody = outputStream -> {
             try {
                 processForm(form, outputStream);
@@ -163,8 +162,7 @@ public class FlatToCSVController extends AbstractFormController<FlatToCSVForm> {
 
     @GetMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<StreamingResponseBody> streamFromSourceToTarget(
-            @RequestParam(required = false) MultiValueMap<String, String> valueMap)
-            throws JobExecutionException {
+            @RequestParam(required = false) MultiValueMap<String, String> valueMap) {
         final Map<String, String> allParams = Objects.requireNonNull(valueMap, "params required").toSingleValueMap();
         allParams.put(ResourceResolver.NODE_LOCAL_PATH, nodeLocalPath);
 

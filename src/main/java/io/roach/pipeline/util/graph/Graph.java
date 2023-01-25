@@ -1,13 +1,6 @@
 package io.roach.pipeline.util.graph;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.util.StringUtils;
 
@@ -103,14 +96,18 @@ public class Graph<N, V> implements Iterable<N>, ImmutableGraph<N, V> {
      * @throws IllegalStateException if the graph contains at least one cycle
      */
     @Override
-    public List<N> topologicalSort() {
+    public List<N> topologicalSort(boolean reverse) {
         Deque<N> visited = new ArrayDeque<>();
         Deque<N> stack = new ArrayDeque<>();
         Deque<N> trail = new ArrayDeque<>();
 
         nodes().forEach(node -> topologicalSortRecursive(node, visited, stack, trail));
 
-        return List.copyOf(stack);
+        List<N> list = new ArrayList<>(stack);
+        if (reverse) {
+            Collections.reverse(list);
+        }
+        return list;
     }
 
     private void topologicalSortRecursive(N node, Deque<N> visited, Deque<N> stack, Deque<N> trail) {

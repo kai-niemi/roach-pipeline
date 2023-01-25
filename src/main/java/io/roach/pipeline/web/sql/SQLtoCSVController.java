@@ -134,8 +134,7 @@ public class SQLtoCSVController extends AbstractFormController<SQLtoCSVForm> {
 
     @Override
     @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<StreamingResponseBody> submitForm(@Valid @RequestBody SQLtoCSVForm form)
-            throws JobExecutionException {
+    public ResponseEntity<StreamingResponseBody> submitForm(@Valid @RequestBody SQLtoCSVForm form) {
         final StreamingResponseBody responseBody = outputStream -> {
             try {
                 processForm(form, outputStream);
@@ -232,8 +231,7 @@ public class SQLtoCSVController extends AbstractFormController<SQLtoCSVForm> {
      */
     @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<StreamingResponseBody> streamFromSourceToTarget(
-            @RequestParam(required = false) Map<String, String> valueMap)
-            throws JobExecutionException {
+            @RequestParam(required = false) Map<String, String> valueMap) {
         final Map<String, String> allParams = Objects.requireNonNull(valueMap, "params required");
         allParams.put(ResourceResolver.NODE_LOCAL_PATH, nodeLocalPath);
 

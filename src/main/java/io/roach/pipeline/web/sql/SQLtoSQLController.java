@@ -1,8 +1,6 @@
 package io.roach.pipeline.web.sql;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +106,8 @@ public class SQLtoSQLController extends AbstractFormController<SQLtoSQLForm> {
                         "(unable to introspect - template source '" + form.getSourceUrl() + "' is not CockroachDB)"));
             }
             form.add(linkTo(methodOn(getClass())
-                    .getFormTemplate(requestParams)).withSelfRel());
+                    .getFormTemplate(requestParams))
+                    .withSelfRel());
         } else {
             form.setSelectClause("<select clause>");
             form.setFromClause("<from clause>");
@@ -207,37 +206,16 @@ public class SQLtoSQLController extends AbstractFormController<SQLtoSQLForm> {
     }
 
     @PostMapping(value = {"/forms"})
-    public ResponseEntity<CollectionModel<MessageModel>> submitFormTemplates(
-            @RequestBody CollectionModel<SQLtoSQLForm> bundle,
-            @RequestParam(value = "order", required = false) String order)
+    public ResponseEntity<CollectionModel<MessageModel>> submitFormTemplateBundle(
+            @RequestBody CollectionModel<SQLtoSQLForm> forms)
             throws JobExecutionException {
-        Collection<SQLtoSQLForm> forms = new ArrayList<>(bundle.getContent());
-        List<SQLtoSQLForm> orderedForms = new ArrayList<>();
-        List<String> tablesInOrder
-                = Arrays.stream(StringUtils.commaDelimitedListToStringArray(order)).toList();
-
-        if (!tablesInOrder.isEmpty()) {
-            tablesInOrder.forEach(table -> {
-                SQLtoSQLForm match
-                        = forms.stream().filter(form -> table.equals(form.getTable())).findFirst()
-                        .orElseThrow(() -> new JobConfigurationException("No such table exist: " + table));
-                orderedForms.add(match);
-            });
-        } else {
-            orderedForms.addAll(forms);
-        }
 
         List<MessageModel> models = new ArrayList<>();
 
-        for (SQLtoSQLForm form : orderedForms) {
+        for (SQLtoSQLForm form : forms) {
             logger.info("Submitting form for table: {}", form.getTable());
-            ResponseEntity<MessageModel> responseEntity = submitForm(form);
-            MessageModel responseBody = responseEntity.getBody();
-            models.add(responseBody);
+            models.add(submitForm(form).getBody());
         }
-
-        // FK topology order for tpc-c
-        // warehouse,district,customer,history,"order",new_order,item,stock,order_line
 
         return ResponseEntity.accepted().body(CollectionModel.of(models));
     }

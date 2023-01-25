@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,6 +37,7 @@ import io.roach.pipeline.config.ClosableDataSource;
 import io.roach.pipeline.config.TemplateProperties;
 import io.roach.pipeline.shell.support.DatabaseInfo;
 import io.roach.pipeline.util.DataSourceProps;
+import io.roach.pipeline.util.graph.Graph;
 import jakarta.servlet.http.HttpServletResponse;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.afford;
@@ -65,12 +67,71 @@ public abstract class AbstractFormController<T extends FormModel<? extends T>> e
     private ObjectMapper objectMapper;
 
     @Override
-    @GetMapping(value = {"/forms/bundle"}, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<StreamingResponseBody> getFormTemplatesBundle(
-            @RequestParam Map<String, String> requestParams, HttpServletResponse response)
-            throws JobExecutionException {
+    @GetMapping(value = {"/forms"})
+    public ResponseEntity<CollectionModel<T>> getFormTemplateBundle(@RequestParam Map<String, String> requestParams) {
+        String sourceUrl = requestParams
+                .getOrDefault("sourceUrl", templateProperties.getSource().getUrl());
+        String sourceUsername = requestParams
+                .getOrDefault("sourceUsername", templateProperties.getSource().getUsername());
+        String sourcePassword = requestParams
+                .getOrDefault("sourcePassword", templateProperties.getSource().getPassword());
+        String schema = requestParams
+                .getOrDefault("schema", "public");
 
-        CollectionModel<T> collectionModel = getFormTemplates(requestParams).getBody();
+        Assert.hasLength(sourceUrl, "sourceUrl is required for auto-templating");
+
+        try (ClosableDataSource dataSource = dataSourceFactory.apply(
+                DataSourceProps.builder()
+                        .withUrl(sourceUrl)
+                        .withUsername(sourceUsername)
+                        .withPassword(sourcePassword)
+                        .withName("template-source")
+                        .build())) {
+
+            Map<String, T> forms = new HashMap<>();
+
+            Graph<String, DatabaseInfo.ForeignKey> graph = new Graph<>();
+
+            DatabaseInfo.listTables(dataSource, schema).forEach(table -> {
+                graph.addNode(table);
+
+                DatabaseInfo.listForeignKeys(dataSource, table).forEach(foreignKey -> {
+                    graph.addNode(foreignKey.getPkTableName());
+                    graph.addEdge(table, foreignKey.getPkTableName(), foreignKey);
+                });
+
+                try {
+                    T form = getFormTemplate(requestParams).getBody();
+                    form.setTable(table);
+                    forms.put(table, form);
+                } catch (JobExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            List<T> orderedForms = new ArrayList<>();
+            try {
+                graph.topologicalSort(true).forEach(t -> orderedForms.add(forms.get(t)));
+            } catch (IllegalStateException e) {
+                orderedForms.addAll(forms.values());
+                logger.warn("", e);
+            }
+
+            return ResponseEntity.ok()
+                    .cacheControl(CacheControl.maxAge(30, TimeUnit.SECONDS))
+                    .body(CollectionModel.of(orderedForms)
+                            .add(linkTo(methodOn(getClass())
+                                    .getFormTemplateBundle(requestParams))
+                                    .withSelfRel()));
+        }
+    }
+
+    @Override
+    @GetMapping(value = {"/forms/zip"}, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<StreamingResponseBody> getFormTemplateZipBundle(
+            @RequestParam Map<String, String> requestParams, HttpServletResponse response) {
+
+        CollectionModel<T> collectionModel = getFormTemplateBundle(requestParams).getBody();
 
         StreamingResponseBody streamingResponseBody = out -> {
             try (final ZipOutputStream zipOutputStream = new ZipOutputStream(response.getOutputStream());
@@ -105,47 +166,6 @@ public abstract class AbstractFormController<T extends FormModel<? extends T>> e
                 .header("Pragma", "no-cache")
                 .header("Expires", "0")
                 .body(streamingResponseBody);
-    }
-
-    @Override
-    @GetMapping(value = {"/forms"})
-    public ResponseEntity<CollectionModel<T>> getFormTemplates(@RequestParam Map<String, String> requestParams) {
-        String sourceUrl = requestParams
-                .getOrDefault("sourceUrl", templateProperties.getSource().getUrl());
-        String sourceUsername = requestParams
-                .getOrDefault("sourceUsername", templateProperties.getSource().getUsername());
-        String sourcePassword = requestParams
-                .getOrDefault("sourcePassword", templateProperties.getSource().getPassword());
-        String schema = requestParams
-                .getOrDefault("schema", "public");
-
-        Assert.hasLength(sourceUrl, "sourceUrl is required for auto-templating");
-
-        try (ClosableDataSource dataSource = dataSourceFactory.apply(
-                DataSourceProps.builder()
-                        .withUrl(sourceUrl)
-                        .withUsername(sourceUsername)
-                        .withPassword(sourcePassword)
-                        .withName("template-source")
-                        .build())) {
-
-            List<T> forms = new ArrayList<>();
-
-            DatabaseInfo.listTables(dataSource, schema).forEach(table -> {
-                requestParams.put("table", table);
-                try {
-                    T form = getFormTemplate(requestParams).getBody();
-                    form.setTable(table);
-                    forms.add(form);
-                } catch (JobExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-            return ResponseEntity.ok()
-                    .cacheControl(CacheControl.maxAge(30, TimeUnit.SECONDS))
-                    .body(CollectionModel.of(forms));
-        }
     }
 
 }

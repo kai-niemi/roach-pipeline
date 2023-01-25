@@ -183,7 +183,6 @@
                         <fileset>
                             <directory>${basedir}</directory>
                             <includes>
-                                <include>.log</include>
                                 <include>*.log</include>
                                 <include>*.gz</include>
                                 <include>*.tmp</include>
@@ -192,7 +191,7 @@
                         <fileset>
                             <directory>${basedir}/.log</directory>
                             <includes>
-                                <include>batch.log</include>
+                                <include>*.log</include>
                                 <include>*.gz</include>
                                 <include>*.tmp</include>
                             </includes>

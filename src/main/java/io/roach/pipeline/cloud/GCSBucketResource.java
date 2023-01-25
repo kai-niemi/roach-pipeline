@@ -80,7 +80,7 @@ public class GCSBucketResource extends AbstractFileResolvingResource {
     @Override
     public InputStream getInputStream() throws IOException {
         String projectId = allParams.getOrDefault(GCE_PROJECT_ID, "");
-        InputStream credentialsInputStream = getCredentialsInpuStream();
+        InputStream credentialsInputStream = getCredentialsInpupStream();
         StorageOptions options = StorageOptions.newBuilder()
                 .setProjectId(projectId)
                 .setCredentials(GoogleCredentials.fromStream(credentialsInputStream)).build();
@@ -88,7 +88,7 @@ public class GCSBucketResource extends AbstractFileResolvingResource {
         return getBlobInputStream(storage, resourceUri.toString());
     }
 
-    private InputStream getCredentialsInpuStream() throws IOException {
+    private InputStream getCredentialsInpupStream() throws IOException {
         InputStream credentialsInputStream;
         String authMethod = allParams.getOrDefault(AUTH, SPECIFIED);
         if (SPECIFIED.equals(authMethod)) {

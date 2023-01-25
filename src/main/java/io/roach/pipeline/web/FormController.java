@@ -16,11 +16,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public interface FormController<T extends FormModel<? extends T>> {
     @GetMapping(value = {"/forms/bundle"}, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    ResponseEntity<StreamingResponseBody> getFormTemplatesBundle(
+    ResponseEntity<StreamingResponseBody> getFormTemplateZipBundle(
             @RequestParam Map<String, String> requestParams, HttpServletResponse response) throws JobExecutionException;
 
     @GetMapping(value = {"/forms"})
-    ResponseEntity<CollectionModel<T>> getFormTemplates(@RequestParam Map<String, String> requestParams) throws JobExecutionException;
+    ResponseEntity<CollectionModel<T>> getFormTemplateBundle(@RequestParam Map<String, String> requestParams) throws JobExecutionException;
 
     @GetMapping(value = {"/form"})
     ResponseEntity<T> getFormTemplate(@RequestParam Map<String, String> requestParams) throws JobExecutionException;

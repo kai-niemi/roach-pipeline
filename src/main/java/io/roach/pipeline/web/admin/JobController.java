@@ -53,7 +53,7 @@ public class JobController {
     private JobOperator jobOperator;
 
     @Autowired
-    private BatchJobRepository batchRepository;
+    private BatchJobRepository batchJobRepository;
 
     @Autowired
     private JobInstanceModelAssembler jobInstanceModelAssembler;
@@ -66,7 +66,7 @@ public class JobController {
 
     @DeleteMapping
     public ResponseEntity<MessageModel> purgeJobs() {
-        int rows = batchRepository.purgeAll();
+        int rows = batchJobRepository.purgeAll();
         return ResponseEntity.ok().body(MessageModel.from("All job metadata deleted (" + rows + " rows)"));
     }
 
