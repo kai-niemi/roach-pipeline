@@ -99,7 +99,7 @@ public class FlatToSQLController extends AbstractFormController<FlatToSQLForm> {
                 form.setInsertQuery(DatabaseInfo.createUpsertForTable(dataSource, table)
                         .orElse("(table '" + table + "' not found)"));
                 form.setCreateQuery(DatabaseInfo.showCreateTable(dataSource, table).orElse(
-                        "(unable to introspect - template source '" + sourceUrl + "' is not CockroachDB)"));
+                        "(Unable to introspect source template db '" + sourceUrl + "')"));
             }
             form.add(linkTo(methodOn(getClass())
                     .getFormTemplate(requestParams)).withSelfRel());

@@ -103,7 +103,7 @@ public class SQLtoSQLController extends AbstractFormController<SQLtoSQLForm> {
                 form.setInsertQuery(DatabaseInfo.createUpsertForTable(dataSource, table)
                         .orElse("(table " + table + " not found)"));
                 form.setCreateQuery(DatabaseInfo.showCreateTable(dataSource, table).orElse(
-                        "(unable to introspect - template source '" + form.getSourceUrl() + "' is not CockroachDB)"));
+                        "(Unable to introspect source template db '" + form.getSourceUrl() + "')"));
             }
             form.add(linkTo(methodOn(getClass())
                     .getFormTemplate(requestParams))

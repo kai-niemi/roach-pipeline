@@ -113,7 +113,7 @@ public class SQLtoCSVController extends AbstractFormController<SQLtoCSVForm> {
                 form.setWhereClause("WHERE 1=1");
                 form.setSortKeys(StringUtils.collectionToCommaDelimitedString(keys));
                 form.setCreateQuery(DatabaseInfo.showCreateTable(dataSource, table).orElse(
-                        "(unable to introspect - template source '" + form.getSourceUrl() + "' is not CockroachDB)"));
+                        "(Unable to introspect source template db '" + form.getSourceUrl() + "')"));
                 form.setImportQuery(DatabaseInfo.createImportIntoForTable(dataSource, table, formLink.toUri())
                         .orElse("(no columns - check table name)"));
             }

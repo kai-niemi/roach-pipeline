@@ -93,6 +93,8 @@ public abstract class AbstractFormController<T extends FormModel<? extends T>> e
             Graph<String, DatabaseInfo.ForeignKey> graph = new Graph<>();
 
             DatabaseInfo.listTables(dataSource, schema).forEach(table -> {
+                requestParams.put("table", table);
+
                 graph.addNode(table);
 
                 DatabaseInfo.listForeignKeys(dataSource, table).forEach(foreignKey -> {
