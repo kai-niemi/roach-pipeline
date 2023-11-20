@@ -1,4 +1,4 @@
-[![Java CI with Maven](https://github.com/kai-niemi/roach-pipeline/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/kai-niemi/roach-pipeline/actions/workflows/maven.yml)
+[![Java CI with Maven](https://github.com/cloudneutral/roach-pipeline/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/cloudneutral/roach-pipeline/actions/workflows/maven.yml)
 
 # Pipeline
 
@@ -89,7 +89,7 @@ Confirm the installation by running:
 
 ## Clone the project
 
-    git clone git@github.com:kai-niemi/roach-pipeline.git pipeline
+    git clone git@github.com:cloudneutral/roach-pipeline.git pipeline
 
 ## Build the executable jar
 
@@ -198,8 +198,5 @@ To disable the shell, use:
     ./mvnw -P jdbc-driver-bundle clean install
  
 # Terms of Use
-
-This tool is an experimental prototype and not supported by Cockroach Labs. Use of this driver
-is entirely at your own risk and Cockroach Labs makes no guarantees or warranties about its operation.
 
 See [MIT](LICENSE.txt) for terms and conditions.
